@@ -33,3 +33,25 @@ class Lesson(models.Model):
         verbose_name = 'урок'
         verbose_name_plural = 'уроки'
         ordering = ('id',)
+
+
+class Payment(models.Model):
+    PAYMENT_FORM_CHOICES = [
+        ('cash', 'наличными'),
+        ('remittance', 'перевод на счет'),
+    ]
+    student = models.CharField(max_length=100, verbose_name='ФИО', **NULLABLE)
+    payment_date = models.DateField(verbose_name='дата платежа', **NULLABLE)
+    course = models.CharField(max_length=100, verbose_name='оплаченный курс', **NULLABLE)
+    lesson = models.CharField(max_length=200, verbose_name='оплаченный урок', **NULLABLE)
+    amount = models.FloatField(verbose_name='сумма платежа', default=0)
+    payment_form = models.CharField(max_length=20, choices=PAYMENT_FORM_CHOICES,
+                                    default='cash', verbose_name='форма оплаты')
+
+    def __str__(self):
+        return f'{self.student}, {self.payment_date}, {self.amount}'
+
+    class Meta:
+        verbose_name = 'платеж'
+        verbose_name_plural = 'платежи'
+        ordering = ('id',)
