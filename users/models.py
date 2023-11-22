@@ -10,7 +10,7 @@ class User(AbstractUser):
         ('owner', 'владелец курса'),
         ('student', 'студент'),
     ]
-    username = None
+    username = models.CharField(max_length=100, verbose_name='ФИО', **NULLABLE)
     email = models.EmailField(unique=True, verbose_name='почта')
     phone = models.CharField(max_length=40, verbose_name='номер телефона', **NULLABLE)
     city = models.CharField(max_length=50, verbose_name='город', **NULLABLE)
