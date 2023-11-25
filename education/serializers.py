@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from education.models import Course, Lesson, Payment
+from education.validators import DescriptionValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -7,6 +8,8 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = '__all__'
+        validators = [DescriptionValidator(field='description'),
+                      DescriptionValidator(field='link_to_video')]
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -19,6 +22,7 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
+        validators = [DescriptionValidator(field='description')]
 
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -26,10 +30,3 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = '__all__'
-
-
-class CourseCreateSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Course
-        fields = ['name', 'description']
