@@ -5,7 +5,6 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from education.permissions import IsOwner, IsStaff, NotStaff
-from rest_framework.response import Response
 from education.pagination import EducationPaginator
 
 
@@ -22,7 +21,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_course.save()
 
     def list(self, request, *args, **kwargs):
-        """Функция позволяет отфильтровать курсы по пользователю"""
+        """Функция позволяет отфильтровать курсы по пользователю и выводить данные постранично"""
         if request.user.is_staff:
             queryset = Course.objects.all()
         else:
@@ -50,7 +49,7 @@ class LessonListAPIView(generics.ListAPIView):
     pagination_class = EducationPaginator
 
     def list(self, request, *args, **kwargs):
-        """Функция позволяет отфильтровать курсы по пользователю"""
+        """Функция позволяет отфильтровать курсы по пользователю и выводить данные постранично"""
         if request.user.is_staff:
             queryset = Lesson.objects.all()
         else:
