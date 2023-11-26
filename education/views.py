@@ -6,12 +6,14 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from education.permissions import IsOwner, IsStaff, NotStaff
 from rest_framework.response import Response
+from education.pagination import EducationPaginator
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated & (IsStaff | IsOwner)]
+    pagination_class = EducationPaginator
 
     def perform_create(self, serializer):
         """Функция сохраняет id пользователя, который создает курс, в поле owner"""
@@ -25,8 +27,9 @@ class CourseViewSet(viewsets.ModelViewSet):
             queryset = Course.objects.all()
         else:
             queryset = Course.objects.filter(owner=request.user)
-        serializer = CourseSerializer(queryset, many=True)
-        return Response(serializer.data)
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = CourseSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
@@ -44,6 +47,7 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated & (IsStaff | IsOwner)]
+    pagination_class = EducationPaginator
 
     def list(self, request, *args, **kwargs):
         """Функция позволяет отфильтровать курсы по пользователю"""
@@ -51,8 +55,9 @@ class LessonListAPIView(generics.ListAPIView):
             queryset = Lesson.objects.all()
         else:
             queryset = Lesson.objects.filter(owner=request.user)
-        serializer = LessonSerializer(queryset, many=True)
-        return Response(serializer.data)
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = LessonSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
