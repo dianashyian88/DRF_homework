@@ -225,14 +225,19 @@ class EducationTestCase(APITestCase):
             owner=self.user
         )
 
-        Subscription.objects.create(
-            id=1,
-            is_active=True,
-            student=self.user
+        data = {
+            "course": 1,
+            "student": self.user.pk,
+            "is_active": True
+        }
+
+        self.client.post(
+            '/subscription/create/',
+            data=data
         )
 
         response = self.client.delete(
-            '/subscription/delete/1/'
+            '/subscription/delete/2/'
         )
 
         self.assertEqual(
