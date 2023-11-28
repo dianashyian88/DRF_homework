@@ -9,6 +9,7 @@ from education.pagination import EducationPaginator
 
 
 class CourseViewSet(viewsets.ModelViewSet):
+    """ViewSet для курсов"""
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated & (IsStaff | IsOwner)]
@@ -32,6 +33,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
+    """Эндпойнт создания урока"""
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated & NotStaff]
 
@@ -43,6 +45,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
 
 
 class LessonListAPIView(generics.ListAPIView):
+    """Эндпойнт выведения списка уроков"""
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated & (IsStaff | IsOwner)]
@@ -60,23 +63,27 @@ class LessonListAPIView(generics.ListAPIView):
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
+    """Эндпойнт выведения информации об одном уроке"""
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsStaff | IsOwner]
 
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
+    """Эндпойнт обновления урока"""
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsStaff | IsOwner]
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
+    """Эндпойнт удаления урока"""
     queryset = Lesson.objects.all()
     permission_classes = [IsOwner & NotStaff]
 
 
 class PaymentListAPIView(generics.ListAPIView):
+    """Эндпойнт выведения информации о платежах"""
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
@@ -87,6 +94,7 @@ class PaymentListAPIView(generics.ListAPIView):
 
 
 class SubscriptionCreateAPIView(generics.CreateAPIView):
+    """Эндпойнт создания подписки на обновления курса"""
     serializer_class = SubscriptionSerializer
     permission_classes = [IsAuthenticated]
 
@@ -98,5 +106,6 @@ class SubscriptionCreateAPIView(generics.CreateAPIView):
 
 
 class SubscriptionDestroyAPIView(generics.DestroyAPIView):
+    """Эндпойнт удаления подписки на обновления курса"""
     queryset = Subscription.objects.all()
     permission_classes = [IsAuthenticated]
