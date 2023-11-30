@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from education.models import Course, Lesson, Payment, Subscription
 from education.validators import DescriptionValidator
+from education.utils import create_payment_data, retrieve_payment_data
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -44,3 +45,36 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = '__all__'
+
+
+class PaymentCreateSerializer(serializers.ModelSerializer):
+    payment_data = serializers.SerializerMethodField()
+    amount = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Payment
+        fields = "__all__"
+
+    def get_payment_data(self, instance):
+        if instance.payment_form == "remittance":
+            pay = create_payment_data(instance.amount)
+            instance.stripe_id = pay["id"]
+            instance.status = pay["status"]
+            instance.save()
+            return pay
+        elif instance.payment_form == "cash":
+            return ["Payment by cash"]
+
+
+class PaymentDetailSerializer(serializers.ModelSerializer):
+    payment_data = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Payment
+        fields = "__all__"
+
+    def get_payment_data(self, instance):
+        if instance.stripe_id is not None:
+            return retrieve_payment_data(instance.stripe_id)
+        else:
+            return ["Payment by cash"]

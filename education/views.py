@@ -1,6 +1,7 @@
 from rest_framework import viewsets, generics
 from education.models import Course, Lesson, Payment, Subscription
-from education.serializers import CourseSerializer, LessonSerializer, PaymentSerializer, SubscriptionSerializer
+from education.serializers import CourseSerializer, LessonSerializer, PaymentSerializer, \
+    SubscriptionSerializer, PaymentCreateSerializer, PaymentDetailSerializer
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
@@ -90,6 +91,29 @@ class PaymentListAPIView(generics.ListAPIView):
     filterset_fields = ('course', 'lesson', 'payment_form')
     ordering_fields = ('payment_date',)
     search_fields = ('course', 'lesson',)
+    permission_classes = [IsAuthenticated]
+
+
+class PaymentCreateAPIView(generics.CreateAPIView):
+    """Эндпойнт создания платежа"""
+    serializer_class = PaymentCreateSerializer
+    queryset = Payment.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        """Функция сохраняет цену курса/урока в поле amount"""
+        pay = serializer.save()
+        if pay.course is not None:
+            pay.amount = Course.objects.get(pk=pay.course.pk).price
+        if pay.lesson is not None:
+            pay.amount = Lesson.objects.get(pk=pay.lesson.pk).price
+        pay.save()
+
+
+class PaymentDetailAPIView(generics.RetrieveAPIView):
+    """Эндпойнт получения информации о платеже"""
+    serializer_class = PaymentDetailSerializer
+    queryset = Payment.objects.all()
     permission_classes = [IsAuthenticated]
 
 

@@ -8,6 +8,7 @@ class Course(models.Model):
     image = models.ImageField(upload_to='education/course/', verbose_name='изображение', **NULLABLE)
     description = models.TextField(verbose_name='описание')
     owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='пользователь', **NULLABLE)
+    price = models.PositiveIntegerField(verbose_name="цена", default=10000)
 
     def __str__(self):
         return f'{self.name}'
@@ -25,6 +26,7 @@ class Lesson(models.Model):
     link_to_video = models.URLField(max_length=200, verbose_name='ссылка на видео', **NULLABLE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс', **NULLABLE)
     owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='пользователь', **NULLABLE)
+    price = models.PositiveIntegerField(verbose_name="цена", default=1000)
 
     def __str__(self):
         return f'{self.name}'
@@ -41,12 +43,14 @@ class Payment(models.Model):
         ('remittance', 'перевод на счет'),
     ]
     student = models.CharField(max_length=100, verbose_name='ФИО', **NULLABLE)
-    payment_date = models.DateField(verbose_name='дата платежа', **NULLABLE)
+    payment_date = models.DateField(verbose_name='дата платежа', auto_now_add=True, **NULLABLE)
     course = models.CharField(max_length=100, verbose_name='оплаченный курс', **NULLABLE)
     lesson = models.CharField(max_length=200, verbose_name='оплаченный урок', **NULLABLE)
     amount = models.FloatField(verbose_name='сумма платежа', default=0)
     payment_form = models.CharField(max_length=20, choices=PAYMENT_FORM_CHOICES,
                                     default='cash', verbose_name='форма оплаты')
+    stripe_id = models.CharField(max_length=100, unique=True, **NULLABLE)
+    status = models.CharField(max_length=150, verbose_name="статус", **NULLABLE)
 
     def __str__(self):
         return f'{self.student}, {self.payment_date}, {self.amount}'
