@@ -28,11 +28,11 @@ def check_user():
     for obj in list_user:
         if obj.last_login is not None:
             time_delta = (now - obj.last_login).days
-            if time_delta > 2:
+            if time_delta > 30:
                 obj.is_active = False
                 obj.save()
         else:
             time_delta = (now - obj.date_joined).days
-            if time_delta > 2:
+            if time_delta > 30:
                 obj.is_active = False
                 obj.save()
