@@ -198,7 +198,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CELERY_BEAT_SCHEDULE = {
     'task-name': {
-        'task': 'education.task.check_user',  # Путь к задаче
+        'task': 'education.tasks.check_user',  # Путь к задаче
         'schedule': timedelta(minutes=1),  # Расписание выполнения задачи
     },
 }

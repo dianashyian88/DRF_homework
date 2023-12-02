@@ -7,7 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from education.permissions import IsOwner, IsStaff, NotStaff
 from education.pagination import EducationPaginator
-from education.task import send_mail_update_course
+from education.tasks import send_mail_update_course
 
 
 class CourseViewSet(viewsets.ModelViewSet):

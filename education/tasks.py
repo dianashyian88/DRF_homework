@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from config.settings import EMAIL_HOST_USER
 from users.models import User
 import datetime
+from django.utils import timezone
 
 
 @shared_task
@@ -19,17 +20,19 @@ def send_mail_update_course(pk):
         )
 
 
+@shared_task
 def check_user():
     list_user = User.objects.all()
+    now = datetime.datetime.now()
+    now = timezone.make_aware(now, timezone.get_current_timezone())
     for obj in list_user:
-        now = datetime.datetime.now()
         if obj.last_login is not None:
             time_delta = (now - obj.last_login).days
-            if time_delta > 30:
+            if time_delta > 2:
                 obj.is_active = False
                 obj.save()
         else:
             time_delta = (now - obj.date_joined).days
-            if time_delta > 30:
+            if time_delta > 2:
                 obj.is_active = False
                 obj.save()
