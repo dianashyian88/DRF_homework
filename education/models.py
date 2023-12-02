@@ -9,6 +9,8 @@ class Course(models.Model):
     description = models.TextField(verbose_name='описание')
     owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='пользователь', **NULLABLE)
     price = models.PositiveIntegerField(verbose_name="цена", default=10000)
+    update_date = models.DateTimeField(auto_now=True, auto_now_add=False,
+                                       verbose_name='дата обновления курса', **NULLABLE)
 
     def __str__(self):
         return f'{self.name}'
@@ -27,6 +29,7 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс', **NULLABLE)
     owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='пользователь', **NULLABLE)
     price = models.PositiveIntegerField(verbose_name="цена", default=1000)
+    update_date = models.DateTimeField(auto_now=True, auto_now_add=False, verbose_name='дата обновления', **NULLABLE)
 
     def __str__(self):
         return f'{self.name}'
