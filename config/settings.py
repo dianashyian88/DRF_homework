@@ -99,9 +99,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'DRF_homework',
-        'USER': 'postgres',
-        'PASSWORD': os.getenv('DATABASES_PASSWORD')
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': 'db'
     }
 }
 
@@ -199,6 +200,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 CELERY_BEAT_SCHEDULE = {
     'task-name': {
         'task': 'education.tasks.check_user',  # Путь к задаче
-        'schedule': timedelta(minutes=1),  # Расписание выполнения задачи
+        'schedule': timedelta(minutes=5),  # Расписание выполнения задачи
     },
 }
